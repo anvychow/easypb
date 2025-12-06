@@ -41,11 +41,13 @@ echo ""
 
 # Update system
 echo "📦 Updating system..."
-apt update && apt upgrade -y
+export DEBIAN_FRONTEND=noninteractive
+apt update
+apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
 
 # Install dependencies
 echo "📦 Installing dependencies..."
-apt install -y curl unzip fail2ban ufw
+apt install -y curl unzip fail2ban ufw gnupg
 
 # Setup firewall
 echo "🔒 Configuring firewall..."
@@ -74,8 +76,8 @@ pm2 save --force
 # Install Caddy
 echo "📦 Installing Caddy..."
 apt install -y debian-keyring debian-archive-keyring apt-transport-https
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg --yes
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list > /dev/null
 apt update
 apt install -y caddy
 
